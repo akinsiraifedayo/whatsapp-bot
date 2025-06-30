@@ -30,3 +30,8 @@ Thumbs.db
 *.png
 *.jpg
 qr.png
+
+# group settings
+# This file is used to store group settings and should not be committed
+group_settings.json
+
