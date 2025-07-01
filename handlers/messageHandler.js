@@ -139,7 +139,7 @@ module.exports = async function handleMessage(sock, msg) {
 
     // Private command: !sendtogroups "GroupPrefix" Your message — send to all groups starting with the prefix
     if (!isGroup && text.startsWith('!sendtogroups ')) {
-        const match = text.match(/^!sendtogroups\s+"([^"]+)"\s+(.+)/)
+        const match = text.match(/^!sendtogroups\s+"([^"]+)"\s+([\s\S]+)/)
 
         if (!match) {
             return await sock.sendMessage(from, {
@@ -195,7 +195,7 @@ module.exports = async function handleMessage(sock, msg) {
     // Private command: !send "Group Name" [message] — send message to group from private chat
     if (!isGroup && text.startsWith('!send ')) {
         // Parse command: !send "Group Name" message
-        const match = text.match(/^!send\s+"([^"]+)"\s+(.+)/)
+        const match = text.match(/^!send\s+"([^"]+)"\s+([\s\S]+)/)
 
         if (!match) {
             // Inform user about correct usage
