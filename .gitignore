@@ -2,7 +2,7 @@
 node_modules/
 
 # Baileys auth data (keep your session private!)
-auth_info_baileys/
+auth_info_baileys*/
 
 # Log files
 *.log
