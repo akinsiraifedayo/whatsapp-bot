@@ -10,7 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.18",
+    "@whiskeysockets/baileys": "^7.0.0-rc.6",
     "qrcode-terminal": "^0.12.0"
   }
 }
