@@ -2,6 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const { mentionAll } = require('../lib/utils')
 const { getMultiTag, setMultiTag } = require('../lib/settings')
+const { send } = require('process')
 
 
 /**
@@ -11,8 +12,11 @@ const { getMultiTag, setMultiTag } = require('../lib/settings')
  * @param {import('@whiskeysockets/baileys').proto.IWebMessageInfo} msg - Incoming message object
  */
 
+const OWNER_JIDS = [] // <-- replace with your numbers (must end with @s.whatsapp.net) eg ["2348012345678@s.whatsapp.net","2348012345678@s.whatsapp.net"]
+let OWNER_ONLY_MODE = false
 
 module.exports = async function handleMessage(sock, msg) {
+    
     const from = msg.key.remoteJid // Chat/group ID
     const userJid = sock.user.id.split(':')[0] + '@s.whatsapp.net' // Bot's own JID
     const isSelfChat = from === userJid // True if message is from bot's own chat
@@ -24,6 +28,11 @@ module.exports = async function handleMessage(sock, msg) {
 
     const isGroup = from.endsWith('@g.us') // True if message is from a group
     const sender = msg.key.participant || msg.key.remoteJid // Sender JID
+    if (OWNER_ONLY_MODE && !OWNER_JIDS.includes(sender)) {
+        console.log(`🚫 Ignored message from non-owner: ${sender}`)
+        return
+    }
+
     // Extract text from different message types
     const text = msg.message.conversation || msg.message.extendedTextMessage?.text || ''
 
@@ -179,7 +188,7 @@ module.exports = async function handleMessage(sock, msg) {
                     mentions
                 })
 
-                await new Promise(res => setTimeout(res, 1000)) // prevent spam flag
+                await new Promise(res => setTimeout(res, 3000)) // prevent spam flag
             }
 
             return await sock.sendMessage(from, {
