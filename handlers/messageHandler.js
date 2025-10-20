@@ -283,10 +283,12 @@ module.exports = async function handleMessage(sock, msg) {
 
                 // if new numbered message starts, send the previous one
                 if (match && currentMessage.trim()) {
+                    // remove numbering tags like [1], [2], etc.
+                    // currentMessage = currentMessage.trim().replace(/^\[\d+\]\s*/, '')
                     await sock.sendMessage(targetGroup.id, { text: currentMessage.trim() })
                     messageCount++
                     currentMessage = ''
-                    await new Promise(res => setTimeout(res, 8000)) // delay between messages
+                    await new Promise(res => setTimeout(res, 3000)) // delay between messages
                 }
 
                 currentMessage += line + '\n'
