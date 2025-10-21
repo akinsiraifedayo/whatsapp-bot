@@ -20,6 +20,14 @@ async function startBot() {
         await handleMessage(sock, messages[0])
     })
 
+    // ===== TEMP SNIPPET FOR CHANNEL JID =====
+    sock.ev.on('messages.upsert', async ({ messages }) => {
+        if (!messages || !messages[0]) return
+        const m = messages[0]
+        console.log('DEBUG MESSAGE JID:', m.key.remoteJid)
+    })
+    // =======================================
+
     sock.ev.on('connection.update', (update) => {
         const { connection, lastDisconnect, qr } = update
         if (qr) {
@@ -32,8 +40,15 @@ async function startBot() {
             if (shouldReconnect) startBot()
         } else if (connection === 'open') {
             console.log('✅ Bot is online!')
+            
         }
+
+        
     })
+    
+
 }
 
 startBot()
+
+
