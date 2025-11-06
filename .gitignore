@@ -17,6 +17,9 @@ Thumbs.db
 # Env files (if you decide to use .env for secrets)
 .env
 
+# Configuration file with sensitive data (owner JIDs, etc.)
+config.json
+
 # Backup files
 *.bak
 *.tmp
@@ -34,4 +37,9 @@ qr.png
 # group settings
 # This file is used to store group settings and should not be committed
 group_settings.json
+
+
+# custom files
+cleaner/
+cleaned_messages.txt
 

@@ -1,0 +1,10 @@
+{
+  "ownerJids": [
+    "2348012345678@s.whatsapp.net",
+    "2348098765432@s.whatsapp.net"
+  ],
+  "ownerOnlyMode": false,
+  "botName": "WhatsApp Bot",
+  "prefix": "!",
+  "enableDebugLogs": false
+}

@@ -1,5 +1,6 @@
 const commandLoader = require('../lib/commandLoader')
 const { getMultiTag } = require('../lib/settings')
+const { loadConfig } = require('../lib/config')
 
 /**
  * Main message handler for incoming WhatsApp messages.
@@ -8,8 +9,10 @@ const { getMultiTag } = require('../lib/settings')
  * @param {import('@whiskeysockets/baileys').proto.IWebMessageInfo} msg - Incoming message object
  */
 
-const OWNER_JIDS = [] // <-- replace with your numbers (must end with @s.whatsapp.net) eg ["2348012345678@s.whatsapp.net"]
-let OWNER_ONLY_MODE = false
+// Load configuration from config.json
+const config = loadConfig()
+const OWNER_JIDS = config.ownerJids || []
+let OWNER_ONLY_MODE = config.ownerOnlyMode || false
 
 // Load all commands on startup
 const commands = commandLoader.loadCommands()
