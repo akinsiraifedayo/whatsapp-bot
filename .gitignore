@@ -1,5 +1,6 @@
 # Node modules (do not commit dependencies)
 node_modules/
+venv/
 
 # Baileys auth data (keep your session private!)
 auth_info_baileys*/
