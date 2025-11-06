@@ -25,7 +25,7 @@ A production-ready WhatsApp bot built with [Baileys](https://github.com/WhiskeyS
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/yourusername/whatsapp-bot.git
+git clone https://github.com/akinsiraifedayo/whatsapp-bot.git
 cd whatsapp-bot
 npm install
 ```
