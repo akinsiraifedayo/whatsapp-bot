@@ -10,6 +10,7 @@ module.exports = {
 
 📌 _Group Commands (usable in groups):_
 • *!ping* – Test bot responsiveness
+• *!help* – Show this command list
 • *!multitag on* – Enable silent tag-all for group
 • *!multitag off* – Disable silent tag-all
 • *!all* – Mention all visibly in group
@@ -25,13 +26,21 @@ module.exports = {
 • *!sendtogroups "Prefix" Message*
 ↪ Send to all groups whose names start with Prefix
 
-🛠 _Examples:_
-• !send "Subfactory Team" Please confirm delivery.
-• !sendtoallgroups Maintenance update at 9PM.
-• !sendtogroups "Subfactory" Power restored!
+👑 _Owner Commands (bot owner only):_
+• *!sendcleanedmessages "Group Name"*
+↪ Send cleaned_messages.txt to specific group
 
-✅ All private messages include silent mentions to everyone in target groups.
-🔒 Only bot owner can use private send commands.
+• *!sendcleanedtochannel [channel-jid]*
+↪ Send cleaned messages to WhatsApp channel
+
+🛠 _Examples:_
+• !send "Tech Group" Please confirm delivery.
+• !sendtoallgroups Maintenance update at 9PM.
+• !sendtogroups "Tech" Power restored!
+• !sendcleanedmessages "Story Group"
+
+✅ All broadcast messages include silent mentions.
+🔒 Owner commands are restricted to configured owners.
         `.trim()
 
         await sock.sendMessage(from, { text: helpText })

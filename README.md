@@ -95,7 +95,7 @@ pm2 save
 
 | Command | Description |
 |---------|-------------|
-| `!sendcleanedmessages` | Send cleaned_messages.txt to group |
+| `!sendcleanedmessages "Group Name"` | Send cleaned_messages.txt to specific group |
 | `!sendcleanedtochannel [jid]` | Send to WhatsApp channel |
 
 ---

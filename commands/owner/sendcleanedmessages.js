@@ -4,14 +4,25 @@ const readline = require('readline')
 
 module.exports = {
     name: 'sendcleanedmessages',
-    description: 'Send cleaned messages from file to "cleanedmessages" group',
-    usage: '!sendcleanedmessages',
+    description: 'Send cleaned messages from file to a specific group',
+    usage: '!sendcleanedmessages "Group Name"',
     category: 'owner',
     privateOnly: true,
     ownerOnly: true,
 
-    async execute({ sock, from, isGroup }) {
+    async execute({ sock, from, isGroup, text }) {
         if (isGroup) return
+
+        // Parse group name from command
+        const match = text.match(/^!sendcleanedmessages\s+"([^"]+)"/)
+
+        if (!match) {
+            return await sock.sendMessage(from, {
+                text: '❗ Usage:\n!sendcleanedmessages "Group Name"\n\nExample:\n!sendcleanedmessages "Tech Group"'
+            })
+        }
+
+        const groupName = match[1].trim()
 
         try {
             const inputPath = path.join(__dirname, '..', '..', 'cleaned_messages.txt')
@@ -24,12 +35,12 @@ module.exports = {
             // Fetch all participating groups
             const allGroups = await sock.groupFetchAllParticipating()
             const targetGroup = Object.values(allGroups).find(
-                g => g.subject.toLowerCase() === 'cleanedmessages'
+                g => g.subject.toLowerCase() === groupName.toLowerCase()
             )
 
             if (!targetGroup) {
                 return await sock.sendMessage(from, {
-                    text: '❌ Group "CLEANEDMESSAGES" not found. Make sure the bot is in that group.'
+                    text: `❌ Group "${groupName}" not found. Make sure the bot is in that group.`
                 })
             }
 
