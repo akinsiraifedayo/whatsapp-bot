@@ -14,6 +14,7 @@ async function startBot() {
         auth: state,
         logger: P({ level: 'silent' })
     })
+    
 
     // Setup all event handlers
     setupCredentialsHandler(sock, saveCreds)
