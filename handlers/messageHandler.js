@@ -3,6 +3,15 @@ const { getMultiTag } = require('../lib/settings')
 const { loadConfig } = require('../lib/config')
 
 /**
+ * Check if a sender JID is an owner (exact match)
+ * @param {string} senderJid
+ * @returns {boolean}
+ */
+function isOwner(senderJid) {
+    return OWNER_JIDS.includes(senderJid)
+}
+
+/**
  * Main message handler for incoming WhatsApp messages.
  * Handles group and private commands using a modular command system.
  * @param {import('@whiskeysockets/baileys').WASocket} sock - WhatsApp socket instance
@@ -31,13 +40,19 @@ module.exports = async function handleMessage(sock, msg) {
     const sender = msg.key.participant || msg.key.remoteJid // Sender JID
 
     // Owner-only mode check
-    if (OWNER_ONLY_MODE && !OWNER_JIDS.includes(sender)) {
+    const senderIsOwner = isOwner(sender)
+    if (OWNER_ONLY_MODE && !senderIsOwner) {
         console.log(`🚫 Ignored message from non-owner: ${sender}`)
         return
     }
 
-    // Extract text from different message types
-    const text = msg.message.conversation || msg.message.extendedTextMessage?.text || ''
+    // Extract text from different message types (including document captions)
+    const text = msg.message.conversation ||
+        msg.message.extendedTextMessage?.text ||
+        msg.message.documentWithCaptionMessage?.message?.documentMessage?.caption ||
+        msg.message.documentMessage?.caption ||
+        msg.message.imageMessage?.caption ||
+        ''
 
     // Only process commands (messages starting with '!')
     if (!text.startsWith('!')) return
@@ -72,7 +87,7 @@ module.exports = async function handleMessage(sock, msg) {
     }
 
     // Check if command is owner-only
-    if (command.ownerOnly && !OWNER_JIDS.includes(sender)) {
+    if (command.ownerOnly && !senderIsOwner) {
         return await sock.sendMessage(from, {
             text: '❌ This command is restricted to bot owners only.'
         })

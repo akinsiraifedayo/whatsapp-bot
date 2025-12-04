@@ -5,8 +5,8 @@ UNIQUE_DELIMITER = "[NEW_MESSAGE_HERE] "
 MAX_MESSAGE_LENGTH = 19000  # split limit
 
 GROUP_MESSAGE = (
-    "\nFor more Novels like this join us on Novels Republic Channel Today\n\n"
-    "https://whatsapp.com/channel/0029VaALswPCRs1qNr0IJW2e\n"
+    "\nFor more Novels like this join us on Novels Republic Whatsapp Group\n\n"
+    "https://chat.whatsapp.com/I39TCVBn32u5rfa04bg7Vv?mode=hqrt3\n"
 )
 
 REPLACEMENTS = [
@@ -24,7 +24,7 @@ LINK_REGEX = re.compile(r"https?:\/\/\S+|www\.\S+", re.IGNORECASE)
 def clean_and_random_insert(message: str) -> str:
     """Clean message content and randomly insert GROUP_MESSAGE (100% chance)."""
     message = PHONE_REGEX.sub("2348055889183", message)
-    message = LINK_REGEX.sub("https://whatsapp.com/channel/0029VaALswPCRs1qNr0IJW2e", message)
+    message = LINK_REGEX.sub("https://chat.whatsapp.com/I39TCVBn32u5rfa04bg7Vv?mode=hqrt3", message)
 
     for pattern, repl in REPLACEMENTS:
         message = pattern.sub(repl, message)

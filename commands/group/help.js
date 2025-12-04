@@ -27,6 +27,9 @@ module.exports = {
 ↪ Send to all groups whose names start with Prefix
 
 👑 _Owner Commands (bot owner only):_
+• *!extractchat* (attach .txt file)
+↪ Extract & clean WhatsApp chat export
+
 • *!sendcleanedmessages "Group Name"*
 ↪ Send cleaned_messages.txt to specific group
 
