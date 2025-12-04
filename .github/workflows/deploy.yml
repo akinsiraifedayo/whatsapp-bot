@@ -68,6 +68,13 @@ jobs:
           script: |
             cd ~/whatsapp-bot
 
+            # Ensure data files exist (Docker creates directories if missing)
+            mkdir -p auth_info_baileys
+            touch cleaned_messages.txt whatsapp_chat.txt
+            # Initialize JSON files with valid content if empty
+            [ -s config.json ] || echo '{"ownerJids":[],"ownerOnlyMode":false,"botName":"WhatsApp Bot","prefix":"!","enableDebugLogs":false}' > config.json
+            [ -s group_settings.json ] || echo '{}' > group_settings.json
+
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
 
             # Pull latest image
