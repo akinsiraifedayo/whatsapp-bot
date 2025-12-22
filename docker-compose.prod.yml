@@ -2,6 +2,7 @@ services:
   whatsapp-bot:
     image: ghcr.io/akinsira/whatsapp-bot:latest
     container_name: whatsapp-bot
+    user: root
     restart: unless-stopped
     stop_grace_period: 10s
     volumes:

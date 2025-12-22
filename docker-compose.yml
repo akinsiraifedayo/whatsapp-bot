@@ -3,6 +3,7 @@ services:
   whatsapp-bot:
     build: .
     container_name: whatsapp-bot
+    user: root
     restart: on-failure
     stop_grace_period: 10s
     volumes:
