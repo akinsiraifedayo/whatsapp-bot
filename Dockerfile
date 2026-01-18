@@ -1,8 +1,8 @@
 # Minimal Node.js Alpine image (~50MB base)
 FROM node:20-alpine
 
-# Install dependencies for native modules (sharp, libsignal)
-RUN apk add --no-cache python3 make g++ vips-dev
+# Install dependencies for native modules (sharp, libsignal) and fonts for PDF
+RUN apk add --no-cache python3 make g++ vips-dev font-noto
 
 WORKDIR /app
 
