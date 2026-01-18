@@ -12,6 +12,7 @@
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc.6",
     "adm-zip": "^0.5.16",
+    "pdfkit": "^0.17.2",
     "qrcode-terminal": "^0.12.0"
   }
 }
