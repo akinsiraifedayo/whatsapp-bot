@@ -4,7 +4,7 @@ const readline = require('readline')
 
 module.exports = {
     name: 'sendcleanedmessages',
-    description: 'Send cleaned messages from file to a specific group',
+    description: 'Send cleaned messages to a specific group',
     usage: '!sendcleanedmessages "Group Name"',
     category: 'owner',
     privateOnly: true,
@@ -44,6 +44,10 @@ module.exports = {
                 })
             }
 
+            await sock.sendMessage(from, {
+                text: `⏳ Starting to send messages to "${targetGroup.subject}"...`
+            })
+
             // Read file line-by-line efficiently
             const fileStream = fs.createReadStream(inputPath, { encoding: 'utf-8' })
             const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity })
@@ -52,10 +56,10 @@ module.exports = {
             let messageCount = 0
 
             for await (const line of rl) {
-                const match = line.match(/^\[\d+\]/)
+                const lineMatch = line.match(/^\[\d+\]/)
 
                 // if new numbered message starts, send the previous one
-                if (match && currentMessage.trim()) {
+                if (lineMatch && currentMessage.trim()) {
                     await sock.sendMessage(targetGroup.id, { text: currentMessage.trim() })
                     messageCount++
                     currentMessage = ''
@@ -72,13 +76,13 @@ module.exports = {
             }
 
             await sock.sendMessage(from, {
-                text: `✅ Sent ${messageCount} extracted message(s) to "${targetGroup.subject}".`
+                text: `✅ Done! Sent ${messageCount} message(s) to "${targetGroup.subject}".\n\nUse !sendpdf "Group Name" to send the PDF.`
             })
 
         } catch (err) {
             console.error(err)
             await sock.sendMessage(from, {
-                text: '❌ Failed to process extracted messages.'
+                text: '❌ Failed to process extracted messages. Error: ' + err.message
             })
         }
     }
