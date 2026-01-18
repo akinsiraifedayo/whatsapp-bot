@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { generatePDF, getMessageCount } = require('../../lib/pdfGenerator')
+const { generatePDF, getMessageCount, getTitle } = require('../../lib/pdfGenerator')
 
 module.exports = {
     name: 'sendpdf',
@@ -48,19 +48,24 @@ module.exports = {
                 targetName = targetGroup.subject
             }
 
+            const novelTitle = getTitle(inputPath)
+
             await sock.sendMessage(from, {
-                text: `⏳ Generating PDF (${messageCount} messages)...`
+                text: `⏳ Generating PDF for "${novelTitle}"...`
             })
 
             const pdfPath = path.join(__dirname, '..', '..', 'cleaned_messages.pdf')
             const { pageCount } = await generatePDF(inputPath, pdfPath)
 
+            // Create safe filename from title
+            const safeFileName = novelTitle.replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 50).trim() || 'novel'
+
             // Send PDF
             await sock.sendMessage(targetChat, {
                 document: fs.readFileSync(pdfPath),
-                fileName: 'cleaned_messages.pdf',
+                fileName: `${safeFileName}.pdf`,
                 mimetype: 'application/pdf',
-                caption: `📚 Complete story (${messageCount} parts, ${pageCount} pages)`
+                caption: `📚 ${novelTitle}`
             })
 
             // Clean up PDF file
@@ -68,7 +73,7 @@ module.exports = {
 
             if (targetChat !== from) {
                 await sock.sendMessage(from, {
-                    text: `✅ PDF sent to "${targetName}" (${messageCount} messages, ${pageCount} pages).`
+                    text: `✅ "${novelTitle}" PDF sent to "${targetName}".`
                 })
             }
 
