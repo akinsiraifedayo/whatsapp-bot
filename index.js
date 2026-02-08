@@ -4,6 +4,7 @@ const handleMessage = require('./handlers/messageHandler')
 const setupConnectionHandler = require('./handlers/connectionHandler')
 const setupCredentialsHandler = require('./handlers/credentialsHandler')
 const setupDebugHandler = require('./handlers/debugHandler')
+const { setupJobsScheduler } = require('./handlers/jobsScheduler')
 
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
@@ -14,12 +15,12 @@ async function startBot() {
         auth: state,
         logger: P({ level: 'silent' })
     })
-    
 
     // Setup all event handlers
     setupCredentialsHandler(sock, saveCreds)
     setupConnectionHandler(sock, startBot)
     setupDebugHandler(sock)
+    setupJobsScheduler(sock)
 
     // Setup message handler
     sock.ev.on('messages.upsert', async ({ messages }) => {

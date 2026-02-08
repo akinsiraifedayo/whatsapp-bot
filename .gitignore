@@ -42,4 +42,5 @@ group_settings.json
 
 # custom files
 cleaned_messages.txt
+sent_jobs.json
 
