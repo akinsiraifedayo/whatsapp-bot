@@ -6,5 +6,9 @@
   "ownerOnlyMode": false,
   "botName": "WhatsApp Bot",
   "prefix": "!",
-  "enableDebugLogs": false
+  "enableDebugLogs": false,
+  "jobsApiUrl": "https://your-jobs-site.com",
+  "jobsApiKey": "your-api-key-here",
+  "jobsChannelJid": "120363021351234567@newsletter",
+  "jobsAutoPost": true
 }
