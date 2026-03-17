@@ -1,0 +1,100 @@
+name: Deploy WhatsApp Bot
+
+on:
+  push:
+    branches:
+      - staging
+    paths-ignore:
+      - '*.md'
+      - 'cleaner/**'
+      - '.gitignore'
+
+concurrency:
+  group: deploy/${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build and push Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ secrets.GHCR_USERNAME }}/whatsapp-bot:latest
+            ghcr.io/${{ secrets.GHCR_USERNAME }}/whatsapp-bot:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy compose file to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
+          source: 'docker-compose.prod.yml,reset-bot.sh'
+          target: ~/whatsapp-bot/
+          overwrite: true
+
+      - name: Deploy WhatsApp Bot
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
+          script_stop: true
+          script: |
+            cd ~/whatsapp-bot
+
+            # Ensure data files exist (Docker creates directories if missing)
+            mkdir -p auth_info_baileys
+            touch cleaned_messages.txt whatsapp_chat.txt
+            chmod +x reset-bot.sh
+            # Initialize JSON files with valid content if empty
+            [ -s config.json ] || echo '{"ownerJids":[],"ownerOnlyMode":false,"botName":"WhatsApp Bot","prefix":"!","enableDebugLogs":false}' > config.json
+            [ -s group_settings.json ] || echo '{}' > group_settings.json
+            [ -s sent_jobs.json ] || echo '{}' > sent_jobs.json
+
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+
+            # Pull latest image
+            docker compose -f docker-compose.prod.yml pull
+
+            # Deploy - only recreates containers with config changes
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+
+            # Wait for health checks
+            echo "Waiting for bot to start..."
+            sleep 10
+
+            # Prune old images
+            docker image prune -f
+
+            # Show status
+            echo "Container status:"
+            docker compose -f docker-compose.prod.yml ps
+
+            echo "Recent logs:"
+            docker compose -f docker-compose.prod.yml logs --tail=20

@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Session data (mounted as volume instead)
+auth_info_baileys/
+
+# Development files
+cleaner/
+.git/
+.gitignore
+*.md
+README*
+
+# Logs and temp files
+*.log
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Data files (will be mounted as volumes)
+cleaned_messages.txt
+whatsapp_chat.txt
+group_settings.json
