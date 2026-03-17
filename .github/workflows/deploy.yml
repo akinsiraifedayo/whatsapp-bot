@@ -75,6 +75,7 @@ jobs:
             # Initialize JSON files with valid content if empty
             [ -s config.json ] || echo '{"ownerJids":[],"ownerOnlyMode":false,"botName":"WhatsApp Bot","prefix":"!","enableDebugLogs":false}' > config.json
             [ -s group_settings.json ] || echo '{}' > group_settings.json
+            [ -s sent_jobs.json ] || echo '{}' > sent_jobs.json
 
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
 
