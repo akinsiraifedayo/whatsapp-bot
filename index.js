@@ -13,7 +13,10 @@ async function startBot() {
     const sock = makeWASocket({
         version,
         auth: state,
-        logger: P({ level: 'silent' })
+        logger: P({ level: 'warn' }),
+        markOnlineOnConnect: false,
+        keepAliveIntervalMs: 10_000,
+        syncFullHistory: false
     })
 
     // Setup all event handlers

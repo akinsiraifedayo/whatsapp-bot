@@ -18,11 +18,24 @@ function setupConnectionHandler(sock, restartBot) {
 
         // Handle connection closure
         if (connection === 'close') {
-            const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut
-            console.log('Connection closed. Reconnecting:', shouldReconnect)
-            if (shouldReconnect) {
-                restartBot()
+            const statusCode = lastDisconnect?.error?.output?.statusCode
+            const reasonName = Object.keys(DisconnectReason).find(k => DisconnectReason[k] === statusCode) || 'unknown'
+
+            // Terminal states: don't auto-reconnect, require manual intervention
+            const terminal = [
+                DisconnectReason.loggedOut,
+                DisconnectReason.badSession,
+                DisconnectReason.multideviceMismatch,
+                DisconnectReason.forbidden
+            ]
+
+            if (terminal.includes(statusCode)) {
+                console.error(`🛑 Connection closed with terminal reason: ${reasonName} (${statusCode}). Manual re-login required.`)
+                return
             }
+
+            console.log(`Connection closed (${reasonName}/${statusCode}). Reconnecting...`)
+            restartBot()
         }
         // Handle successful connection
         else if (connection === 'open') {
